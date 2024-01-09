@@ -9,6 +9,7 @@ export default function PlayerName(props) {
       alert("Please Enter Players Name");
       return;
     }
+    values.setMessage(values.player1+" Turn")
     values.setGameStart(true);
   }
   return (

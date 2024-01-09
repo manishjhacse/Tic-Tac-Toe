@@ -7,7 +7,6 @@ function App() {
   const [fill, setFill] = useState(Array(9).fill(null));
   const [currentTurn, setCurrentTurn] = useState("X");
   const [gameEnd, setGameEnd] = useState(false);
-  const [scale, setScale] = useState("scale-0");
   const [message, setMessage] = useState("");
   const [player1, setPlayer1] = useState(null);
   const [player2, setPlayer2] = useState(null);
@@ -18,8 +17,10 @@ function App() {
   function handleRestart() {
     setFill(Array(9).fill(null));
     setGameEnd(false);
-    setMessage("");
-    setCurrentTurn("X");
+    setCurrentTurn(currentTurn === "X" ? "0" : "X");
+    currentTurn !== "X"
+    ? setMessage(player1 + " Turn")
+    : setMessage(player2 + " Turn");
   }
   function isDraw(stateCopy) {
     for (let i = 0; i < stateCopy.length; i++) {
@@ -54,10 +55,6 @@ function App() {
   }
   function handleClick(index) {
     if (gameEnd) {
-      setTimeout(() => {
-        setScale("scale-0");
-      }, 1000);
-      setScale("scale-1");
       return;
     }
     if (fill[index] !== null) return;
@@ -65,33 +62,24 @@ function App() {
     stateCopy[index] = currentTurn;
     const win = isWin(stateCopy);
     if (win) {
-      setTimeout(() => {
-        setScale("scale-0");
-      }, 1000);
-      setScale("scale-1");
       currentTurn === "X"
         ? setPlayer1win(player1win + 1)
         : setPlayer2win(player2win + 1);
       currentTurn === "X"
         ? setMessage(player1 + " won the game")
         : setMessage(player2 + " won the game");
-
       setGameEnd(true);
       setFill(stateCopy);
       return;
     }
     if (isDraw(stateCopy)) {
-      setTimeout(() => {
-        setScale("scale-0");
-      }, 1000);
-      setScale("scale-1");
       setGameEnd(true);
       setMessage("Game Draw");
       setFill(stateCopy);
       return;
     }
-
     setCurrentTurn(currentTurn === "X" ? "0" : "X");
+    setMessage(currentTurn !== "X" ? player1 + " Turn" : player2 + " Turn");
     setFill(stateCopy);
   }
   const values = {
@@ -105,6 +93,7 @@ function App() {
     setPlayer2win,
     gameStart,
     setGameStart,
+    setMessage,
   };
   return (
     <div className="h-screen w-screen flex justify-center bg-black text-white items-center relative overflow-hidden">
@@ -117,29 +106,31 @@ function App() {
       {gameStart && (
         <div className="flex flex-col justify-center items-center gap-y-2 relative">
           <div
-            className={`text-xl font-bold flex justify-center items-center text-center transition-all duration-200 uppercase ${scale} m-0`}
+            className={`text-xl font-bold flex justify-center items-center text-center transition-all duration-200 uppercase m-0`}
           >
             {message}
           </div>
-          <div className="flex gap-2">
-            <Box symbol={fill[0]} onClick={() => handleClick(0)}></Box>
-            <Box symbol={fill[1]} onClick={() => handleClick(1)}></Box>
-            <Box symbol={fill[2]} onClick={() => handleClick(2)}></Box>
+          <div className="w-[190px] h-[170px] relative flex overflow-hidden flex-col justify-center items-center">
+            <div className="flex gap-2">
+              <Box symbol={fill[0]} onClick={() => handleClick(0)}></Box>
+              <Box symbol={fill[1]} onClick={() => handleClick(1)}></Box>
+              <Box symbol={fill[2]} onClick={() => handleClick(2)}></Box>
+            </div>
+            <div className="flex gap-2">
+              <Box symbol={fill[3]} onClick={() => handleClick(3)}></Box>
+              <Box symbol={fill[4]} onClick={() => handleClick(4)}></Box>
+              <Box symbol={fill[5]} onClick={() => handleClick(5)}></Box>
+            </div>
+            <div className="flex gap-2">
+              <Box symbol={fill[6]} onClick={() => handleClick(6)}></Box>
+              <Box symbol={fill[7]} onClick={() => handleClick(7)}></Box>
+              <Box symbol={fill[8]} onClick={() => handleClick(8)}></Box>
+            </div>
+            <span className="absolute border-b-4 w-full border-white top-[34%]"></span>
+            <span className="absolute border-b-4 w-full border-white top-[65%]"></span>
+            <span className="absolute border-l-4 h-[170px] border-white  left-[67%]"></span>
+            <span className="absolute border-l-4 h-[170px] border-white  left-[33%]"></span>
           </div>
-          <div className="flex gap-2">
-            <Box symbol={fill[3]} onClick={() => handleClick(3)}></Box>
-            <Box symbol={fill[4]} onClick={() => handleClick(4)}></Box>
-            <Box symbol={fill[5]} onClick={() => handleClick(5)}></Box>
-          </div>
-          <div className="flex gap-2">
-            <Box symbol={fill[6]} onClick={() => handleClick(6)}></Box>
-            <Box symbol={fill[7]} onClick={() => handleClick(7)}></Box>
-            <Box symbol={fill[8]} onClick={() => handleClick(8)}></Box>
-          </div>
-          <span className="absolute border-b-4 w-full border-white top-[33%]"></span>
-          <span className="absolute border-b-4 w-full border-white top-[66%]"></span>
-          <span className="absolute border-l-4 h-[180px] border-white left-[67%]"></span>
-          <span className="absolute border-l-4 h-[180px] border-white left-[33%]"></span>
           {gameEnd && (
             <button
               onClick={handleRestart}
